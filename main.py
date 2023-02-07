@@ -2,13 +2,7 @@ from pyrogram import Client, filters
 from os import environ
 from dotenv import load_dotenv
 from os.path import join, dirname
-import re
-from deep_translator import GoogleTranslator
-import pymysql
-from config import sockdata
 
-
-translator = GoogleTranslator(source='auto', target='ru')
 
 
 load_dotenv(join(dirname(__file__), '.env'))
@@ -19,76 +13,40 @@ botTG = Client(environ.get('APP_NAME'), api_id=environ.get('API_ID'), api_hash=e
 
 params: dict = {
 	
-	'test': -1001651474042,
-	'test2': -1001651474042,
-	'target_chat_id': -1001461338272
-
+	'vip_future': -1001552023060,
+	'vip_club': -1001756092613,
+	'target_chat_id': -1001522615061
 
 }
 
 
-class Messages:
-	def __init__(self):
-		self.connection = pymysql.connect(**sockdata)
-		self.cursor = self.connection.cursor()
+
+async def send_clear2(text):
+	with botTG:
+		await botTG.send_message(params['target_chat_id'], text)
 
 
 
-	def add_to_vipclub(self, message_id: int, message_text: str):
-		try:
-			with self.connection as connect:
-				self.cursor.executemany("INSERT INTO vipclub (message_id, message_text) VALUES (%s, %s);", message.id, translate_channel2)
-				connect.commit()
-				if pymysql.err.errno == 1205:
-					print("Timeout error")
-				else:
-					raise
-		except pymysql.err.OperationalError:
-			print("Can't execute fron database vipclub")
-			if self.connection.is_connected():
-				connection.close()
-		finally:
-			time.sleep(4)
 
-
-	def add_to_vipfuture(self, message_id: int, message_text: str):
-		try:
-			with self.connection as connect:
-				self.cursor.executemany("INSERT INTO vipfuture (message_id, message_text) VALUES (%s, %s);", message.id, translate_channel1)
-				connect.commit()
-				if pymysql.err.errno == 1205:
-					print("Timeout error")
-				else:
-					raise
-		except pymysql.err.OperationalError:
-			print("Can't execute fron database vipfuture")
-			if self.connection.is_connected():
-				connection.close()
-
-		finally:
-			time.sleep(4)
-
-
-	def exists(self):
-		pass
-
-
-# @botTG.on_message(filters.chat(params['test']))
-# async def sending_message(client, message):
-# 	global translator
-# 	text: str = ""
-# 	eng_check = re.compile(r'[A-za-z0-9]')
-# 	text = "".join(message.text)
-# 	translate_channel1 = translator.translate(text)
-# 	print(type(translate_channel1))
-# 	with botTG:
-# 		await botTG.forward_messages(params['target_chat_id'], params['test'], message.id, message.text) #сюда надо в параметры закидывать в цикле
+@botTG.on_message(filters.chat(params['vip_club']))
+async def sending_message(client, message):
+	
+	text: str = ""
+	
+	text = "".join(message.text)
+	text = text.replace("Exchanges:", "Обмен:")
+	text = text.replace("Signal Type:", "Тип сигнала:")
+	text = text.replace("Leverage:", "Плечо:")
+	text = text.replace("Entry Price:", "Цена входа:")
+	text = text.replace("Take-Profit Targets:", "Цели:")
+	text = text.replace("Entry Targets:", "Цена входа:")
+	text = text.replace("Stop Targets:", "Стоп-лосс:")
+	text = text.replace("Regular (Short)", "Стандартный (Шорт)")
+	text = text.replace("Regular (Long)", "Стандартный (Лонг)")
+	await send_clear2(text)
 		
 
 
-async def send_clear(text):
-	with botTG:
-		await botTG.send_message(params['target_chat_id'], text)
 
 
 async def send_clear(text):
@@ -96,21 +54,22 @@ async def send_clear(text):
 		await botTG.send_message(params['target_chat_id'], text)
 
 
-@botTG.on_message(filters.chat(params['test2']))
+@botTG.on_message(filters.chat(params['vip_future']))
 async def sending_message2(client, message):
 	text: str = ""
 	
 	text = "".join(message.text)
-	text = text.replace("Entry Price:", "Цена входа:")
+	
 	text = text.replace("Take Profit", "Тейк профит")
 	text = text.replace("Mark Price:", "Цена маркировки:")
 	text = text.replace("Period:", "Период:")
 	text = text.replace("Profit by signal:", "Прибыль по сигналу:")
 	text = text.replace("(Short)", "Шорт")
-	text = text.replace("Cross", "Кросс")
+	text = text.replace("Cross", "Плечо")
 	text = text.replace("TP:", "Тейк Профит:")
 	text = text.replace("SL:", "Стоп Лосс:")
 	text = text.replace("Entry Targets:", "Точка входа:")
+	text = text.replace("(Long)", "Лонг")
 	
 	print(text)
 	await send_clear(text)

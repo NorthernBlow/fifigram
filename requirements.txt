@@ -1,0 +1,4 @@
+Pyrogram==2.0.97
+PySocks==1.7.1
+python-dotenv==0.21.1
+pyaes==1.6.1
