@@ -70,6 +70,14 @@ async def sending_message2(client, message):
 	text = text.replace("SL:", "Стоп Лосс:")
 	text = text.replace("Entry Targets:", "Точка входа:")
 	text = text.replace("(Long)", "Лонг")
+	text = text.replace("Entry Price:", "Цена входа:")
+
+
+	#new
+
+	text = text.replace("Target", "Цель")
+	text = text.replace("Mark Price", "Цена Маркировки")
+	text = text.replace("Profit", "Профит")
 	
 	print(text)
 	await send_clear(text)

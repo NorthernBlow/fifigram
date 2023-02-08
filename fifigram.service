@@ -1,0 +1,12 @@
+[Unit]
+Description=fifigram
+After=network.target
+
+[Service]
+User=pooh
+Group=pooh
+WorkingDirectory=/home/northernblow/fifigram
+Environment="PATH=/home/northernblow/fifigram/venv/bin"
+ExecStart=/home/northernblow/fifigram/venv/bin/python listen_bot.py
+TimeoutSec=30
+Restart=always
