@@ -43,6 +43,13 @@ async def sending_message(client, message):
 	text = text.replace("Stop Targets:", "Стоп-лосс:")
 	text = text.replace("Regular (Short)", "Стандартный (Шорт)")
 	text = text.replace("Regular (Long)", "Стандартный (Лонг)")
+
+
+	text = text.replace("Target", "Цель")
+	text = text.replace("Mark Price", "Цена Маркировки")
+	text = text.replace("Profit", "Профит")
+
+	
 	await send_clear2(text)
 		
 
