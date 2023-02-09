@@ -2,6 +2,8 @@ from pyrogram import Client, filters
 from os import environ
 from dotenv import load_dotenv
 from os.path import join, dirname
+import asyncio
+import json
 
 
 
@@ -48,6 +50,7 @@ async def sending_message(client, message):
 	text = text.replace("Target", "Цель")
 	text = text.replace("Mark Price", "Цена Маркировки")
 	text = text.replace("Profit", "Профит")
+	text = text.replace("achieved in", "достигнута в")
 
 	
 	await send_clear2(text)
@@ -89,4 +92,33 @@ async def sending_message2(client, message):
 	print(text)
 	await send_clear(text)
 
+
+
+
+
+# FIXME: если надо запустить бота, надо закомментить работу с выгрузкой истории. 
+async def history():
+	dump: str = ''
+	async with botTG:
+		with open('dump.txt', 'w') as f:
+			async for message in botTG.get_chat_history(params['vip_future']):
+				dump += message.text + ','
+				
+				f.write(dump)
+				f.write('\n')
+				print(dump)
+
+
+
+
+
+async def main():
+	task = asyncio.create_task(history())
+	await task
+
+
+
+
+
+asyncio.run(main())
 botTG.run()
