@@ -58,7 +58,10 @@ args: message - объект класса pyrogram.Client.Message
 """
 	with botTG:
 		print(message)
-		await botTG.send_cached_media(params['target_chat_id'], message.photo.file_id, message.caption)
+		if not message.caption:
+			await botTG.send_cached_media(params['target_chat_id'], message.photo.file_id)
+		else:
+			await botTG.send_cached_media(params['target_chat_id'], message.photo.file_id, message.caption)
 
 
 
@@ -66,35 +69,50 @@ args: message - объект класса pyrogram.Client.Message
 @botTG.on_message(filters.chat(params['test2']))
 async def sending_message(client, message):
 	
-	text: str = ""
-	text = "".join(message.text)
-	text = text.replace("Exchanges:", "Обмен:")
-	text = text.replace("Signal Type:", "Тип сигнала:")
-	text = text.replace("Leverage:", "Плечо:")
-	text = text.replace("Entry Price:", "Цена входа:")
-	text = text.replace("Take-Profit Targets:", "Цели:")
-	text = text.replace("Entry Targets:", "Цена входа:")
-	text = text.replace("Stop Targets:", "Стоп-лосс:")
-	text = text.replace("Regular (Short)", "Стандартный (Шорт)")
-	text = text.replace("Regular (Long)", "Стандартный (Лонг)")
+	try:
+		text: str = ""
+		text = "".join(message.text)
+		text = text.replace("Exchanges:", "Обмен:")
+		text = text.replace("Signal Type:", "Тип сигнала:")
+		text = text.replace("Leverage:", "Плечо:")
+		text = text.replace("Entry Price:", "Цена входа:")
+		text = text.replace("Take-Profit Targets:", "Цели:")
+		text = text.replace("Entry Targets:", "Цена входа:")
+		text = text.replace("Stop Targets:", "Стоп-лосс:")
+		text = text.replace("Regular (Short)", "Стандартный (Шорт)")
+		text = text.replace("Regular (Long)", "Стандартный (Лонг)")
 
 
-	text = text.replace("Target", "Цель")
-	text = text.replace("Mark Price", "Цена Маркировки")
-	text = text.replace("Profit", "Профит")
-	text = text.replace("achieved in", "достигнута в")
-	print(message)
-	if message:
-		if not message.photo:
-			try:
-				if message.reply_to_message.id:
-					idreply = message.reply_to_message.id
-					await send_with_reply(text, idreply)
-			except AttributeError:
-				await send_clear2(text)
-		
-		else: 
-			await send_with_picture(message)
+		text = text.replace("Target", "Цель")
+		text = text.replace("Mark Price", "Цена Маркировки")
+		text = text.replace("Profit", "Профит")
+		text = text.replace("achieved in", "достигнута в")
+	except TypeError:
+		print(message)
+		if message:
+			if not message.photo:
+				try:
+					if message.reply_to_message.id:
+						pass
+						# idreply = message.reply_to_message.id
+						# await send_with_reply(text, idreply)
+				except AttributeError:
+					await send_clear2(text)
+			
+			else: 
+				await send_with_picture(message)
+	finally:
+		if message:
+			if not message.photo:
+				try:
+					if message.reply_to_message.id:
+						idreply = message.reply_to_message.id
+						await send_with_reply(text, idreply)
+				except AttributeError:
+					await send_clear2(text)
+			
+			else: 
+				await send_with_picture(message)
 
 
 
