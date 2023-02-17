@@ -9,7 +9,7 @@ import json
 
 load_dotenv(join(dirname(__file__), '.env'))
 
-botTG = Client(environ.get('APP_NAME'), api_id=environ.get('API_ID'), api_hash=environ.get('API_HASH'))
+botTG = Client('fifigram', api_id=environ.get('API_ID'), api_hash=environ.get('API_HASH'))
 
 
 
@@ -24,7 +24,7 @@ params: dict = {
 
 
 
-async def send_with_reply(text: str, idreply: int):
+async def send_with_reply(text: str, for_reply_message):
 	"""Функция-пересыльщик сообщений, на которые есть ответ. Пересылает
 	обработанный в функции sending_message() message.text, пересылает этот текст
 	ответом на полученный id
@@ -32,8 +32,10 @@ async def send_with_reply(text: str, idreply: int):
 args: text - str, переведенный. idreply - int, id сообщения. 
 """
 
-	with botTG:
-		await botTG.send_message(params['target_chat_id'], text, reply_to_message_id=idreply)
+	#with botTG:
+	async for message in botTG.search_messages(params['target_chat_id'], for_reply_message.text):
+		print(' need id: ', message.id)
+		await botTG.send_message(params['target_chat_id'], text, reply_to_message_id=message.id)
 
 
 
@@ -88,28 +90,34 @@ async def sending_message(client, message):
 		text = text.replace("Profit", "Профит")
 		text = text.replace("achieved in", "достигнута в")
 	except TypeError:
-		print(message)
-		if message:
-			if not message.photo:
-				try:
-					if message.reply_to_message.id:
-						pass
+		print(' Здесь какая-то ошибка! СУКАА \n', TypeError)
+		#if message:
+		#	if not message.photo:
+		#		try:
+		#			if message.reply_to_message_id:
+		#				pass
 						# idreply = message.reply_to_message.id
 						# await send_with_reply(text, idreply)
-				except AttributeError:
-					await send_clear2(text)
+		#		except AttributeError:
+		#			await send_clear2(text)
 			
-			else: 
-				await send_with_picture(message)
+		#	else: 
+		#		await send_with_picture(message)
 	finally:
 		if message:
 			if not message.photo:
 				try:
-					if message.reply_to_message.id:
-						idreply = message.reply_to_message.id
-						await send_with_reply(text, idreply)
-				except AttributeError:
-					await send_clear2(text)
+					if message.reply_to_message_id:
+						print('this code.')
+						chat_id = message.chat.id
+						idreply = message.reply_to_message_id
+						for_reply_message = await botTG.get_messages(chat_id, idreply)
+						print(for_reply_message)
+						print('Ok?')
+						await send_with_reply(text, for_reply_message)
+				except AttributeError as ae:
+					print(' Здесь какая-то ошибка! СУКАА \n', ae)
+					#await send_clear2(text)
 			
 			else: 
 				await send_with_picture(message)

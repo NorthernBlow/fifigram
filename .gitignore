@@ -2,3 +2,4 @@ env/
 .env
 fifibot.session
 fifibot.session-journal
+fifigram.session
