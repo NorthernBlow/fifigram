@@ -16,14 +16,14 @@ params: dict = {
 	
 	'vip_future': -1001552023060,
 	'vip_club': -1001756092613,
-	'target_chat_id': -1001522615061,
+	'target_chat_id': -1001461338272,
 	'test2': -1001651474042
 
 }
 images_ids: list = []
 
 
-async def send_with_reply(text: str, for_reply_message):
+async def send_with_reply(text: str, clear_reply_message):
 	"""Функция-пересыльщик сообщений, на которые есть ответ. Пересылает
 	обработанный в функции sending_message() message.text, пересылает этот текст
 	ответом на полученный id
@@ -32,7 +32,7 @@ args: text - str, переведенный. idreply - int, id сообщения
 """
 
 	#with botTG:
-	async for message in botTG.search_messages(params['target_chat_id'], for_reply_message.text):
+	async for message in botTG.search_messages(params['target_chat_id'], clear_reply_message):
 		print(' need id: ', message.id)
 		await botTG.send_message(params['target_chat_id'], text, reply_to_message_id=message.id)
 
@@ -83,7 +83,7 @@ threading.Timer(6.0, send_with_picture, [images_ids]).start()
 
 
 
-@botTG.on_message(filters.chat(params['vip_club']))
+@botTG.on_message(filters.chat(params['test2']))
 async def sending_message(client, message):
 	
 	try:
@@ -129,17 +129,33 @@ async def sending_message(client, message):
 						chat_id = message.chat.id
 						idreply = message.reply_to_message_id
 						for_reply_message = await botTG.get_messages(chat_id, idreply)
-						print(for_reply_message)
+						clear_reply_message = "".join(for_reply_message.text)
+						clear_reply_message = clear_reply_message.replace("Exchanges:", "Обмен:")
+						clear_reply_message = clear_reply_message.replace("Signal Type:", "Тип сигнала:")
+						clear_reply_message = clear_reply_message.replace("Leverage:", "Плечо:")
+						clear_reply_message = clear_reply_message.replace("Entry Price:", "Цена входа:")
+						clear_reply_message = clear_reply_message.replace("Take-Profit Targets:", "Цели:")
+						clear_reply_message = clear_reply_message.replace("Entry Targets:", "Цена входа:")
+						clear_reply_message = clear_reply_message.replace("Stop Targets:", "Стоп-лосс:")
+						clear_reply_message = clear_reply_message.replace("Regular (Short)", "Стандартный (Шорт)")
+						clear_reply_message = clear_reply_message.replace("Regular (Long)", "Стандартный (Лонг)")
+
+
+						clear_reply_message = clear_reply_message.replace("Target", "Цель")
+						clear_reply_message = clear_reply_message.replace("Mark Price", "Цена Маркировки")
+						clear_reply_message = clear_reply_message.replace("Profit", "Профит")
+						clear_reply_message = clear_reply_message.replace("achieved in", "достигнута в")
+						print(for_reply_message.text)
 						# print('Ok?')
-						await send_with_reply(text, for_reply_message)
+						await send_with_reply(text, clear_reply_message)
 					else:
 						await send_clear2(text)
 				except AttributeError as ae:
 					print(' Здесь какая-то ошибка! СУКАА \n', ae)
 					await send_clear2(text)
 			
-			else:
-				images_ids.append(InputMediaPhoto(message.photo.file_id, caption=message.caption))
+			#else:
+				#images_ids.append(InputMediaPhoto(message.photo.file_id, caption=message.caption))
 				# print("images ids = ", images_ids)
 				# await send_with_picture(message)
 				
@@ -209,9 +225,29 @@ async def sending_message2(client, message):
 						chat_id = message.chat.id
 						idreply = message.reply_to_message_id
 						for_reply_message = await botTG.get_messages(chat_id, idreply)
-						print(for_reply_message)
+						clear_reply_message = "".join(for_reply_message.text)
+		
+						clear_reply_message = clear_reply_message.replace("Take Profit", "Тейк профит")
+						clear_reply_message = clear_reply_message.replace("Mark Price:", "Цена маркировки:")
+						clear_reply_message = clear_reply_message.replace("Period:", "Период:")
+						clear_reply_message = clear_reply_message.replace("Profit by signal:", "Прибыль по сигналу:")
+						clear_reply_message = clear_reply_message.replace("(Short)", "Шорт")
+						clear_reply_message = clear_reply_message.replace("Cross", "Плечо")
+						clear_reply_message = clear_reply_message.replace("TP:", "Тейк Профит:")
+						clear_reply_message = clear_reply_message.replace("SL:", "Стоп Лосс:")
+						clear_reply_message = clear_reply_message.replace("Entry Targets:", "Точка входа:")
+						clear_reply_message = clear_reply_message.replace("(Long)", "Лонг")
+						clear_reply_message = clear_reply_message.replace("Entry Price:", "Цена входа:")
+
+
+						#new
+
+						clear_reply_message = clear_reply_message.replace("Target", "Цель")
+						clear_reply_message = clear_reply_message.replace("Mark Price", "Цена Маркировки")
+						clear_reply_message = clear_reply_message.replace("Profit", "Профит")
+						#print(for_reply_message)
 						# print('Ok?')
-						await send_with_reply(text, for_reply_message)
+						await send_with_reply(text, clear_reply_message)
 					else:
 						await send_clear2(text)
 				except AttributeError as ae:
