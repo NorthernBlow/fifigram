@@ -6,7 +6,7 @@ After=network.target
 User=root
 Group=root
 WorkingDirectory=/root/progs/fifigram
-Environment="PATH=/home/northernblow/fifigram/venv/bin"
-ExecStart=/root/progs/fifigram/venv/bin/python3 main.py
+Environment="PATH=/home/northernblow/fifigram/env/bin"
+ExecStart=/root/progs/fifigram/env/bin/python3 main.py
 TimeoutSec=30
 Restart=always

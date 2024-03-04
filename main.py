@@ -16,7 +16,7 @@ params: dict = {
 	
 	'vip_future': -1001552023060,
 	'vip_club': -1001756092613,
-	'target_chat_id': -1001461338272,
+	'target_chat_id': -1001522615061,
 	'test2': -1001651474042
 
 }
@@ -32,9 +32,36 @@ args: text - str, переведенный. idreply - int, id сообщения
 """
 
 	#with botTG:
-	async for message in botTG.search_messages(params['target_chat_id'], clear_reply_message):
+	async for message in botTG.search_messages(params['target_chat_id'], "#team_1 \n" + clear_reply_message):
 		print(' need id: ', message.id)
-		await botTG.send_message(params['target_chat_id'], text, reply_to_message_id=message.id)
+		await botTG.send_message(params['target_chat_id'], "#team_1 \n" + text, reply_to_message_id=message.id)
+
+
+
+
+async def send_with_reply2(text: str, clear_reply_message):
+	"""Функция-пересыльщик сообщений, на которые есть ответ. Пересылает
+	обработанный в функции sending_message() message.text, пересылает этот текст
+	ответом на полученный id
+
+args: text - str, переведенный. idreply - int, id сообщения. 
+"""
+
+	#with botTG:
+	async for message in botTG.search_messages(params['target_chat_id'], "#team_2 \n" + clear_reply_message):
+		print(' need id: ', message.id)
+		await botTG.send_message(params['target_chat_id'], "#team_2 \n" + text, reply_to_message_id=message.id)
+
+
+
+async def send_clear(text):
+	"""Функция-пересыльщик переведенных сообщений. Просто берет и пересылает
+	обработанный в функции sending_message2() message.text
+
+args: text - str, переведенный.
+"""
+	with botTG:
+		await botTG.send_message(params['target_chat_id'], "#team_1 \n" + text)
 
 
 
@@ -46,7 +73,7 @@ async def send_clear2(text: str):
 args: text - str, переведенный.
 """
 	with botTG:
-		await botTG.send_message(params['target_chat_id'], text)
+		await botTG.send_message(params['target_chat_id'], "#team_2 \n" + text)
 
 
 
@@ -83,7 +110,7 @@ threading.Timer(6.0, send_with_picture, [images_ids]).start()
 
 
 
-@botTG.on_message(filters.chat(params['test2']))
+@botTG.on_message(filters.chat(params['vip_club']))
 async def sending_message(client, message):
 	
 	try:
@@ -98,12 +125,13 @@ async def sending_message(client, message):
 		text = text.replace("Stop Targets:", "Стоп-лосс:")
 		text = text.replace("Regular (Short)", "Стандартный (Шорт)")
 		text = text.replace("Regular (Long)", "Стандартный (Лонг)")
-
-
 		text = text.replace("Target", "Цель")
 		text = text.replace("Mark Price", "Цена Маркировки")
 		text = text.replace("Profit", "Профит")
 		text = text.replace("achieved in", "достигнута в")
+		
+		
+		
 	except TypeError:
 		print(' Здесь какая-то ошибка! СУКАА \n', TypeError)
 		# if message:
@@ -149,10 +177,10 @@ async def sending_message(client, message):
 						# print('Ok?')
 						await send_with_reply(text, clear_reply_message)
 					else:
-						await send_clear2(text)
+						await send_clear(text)
 				except AttributeError as ae:
 					print(' Здесь какая-то ошибка! СУКАА \n', ae)
-					await send_clear2(text)
+					await send_clear(text)
 			
 			#else:
 				#images_ids.append(InputMediaPhoto(message.photo.file_id, caption=message.caption))
@@ -162,14 +190,7 @@ async def sending_message(client, message):
 
 
 
-async def send_clear(text):
-	"""Функция-пересыльщик переведенных сообщений. Просто берет и пересылает
-	обработанный в функции sending_message2() message.text
 
-args: text - str, переведенный.
-"""
-	with botTG:
-		await botTG.send_message(params['target_chat_id'], text)
 
 
 @botTG.on_message(filters.chat(params['vip_future']))
@@ -247,7 +268,7 @@ async def sending_message2(client, message):
 						clear_reply_message = clear_reply_message.replace("Profit", "Профит")
 						#print(for_reply_message)
 						# print('Ok?')
-						await send_with_reply(text, clear_reply_message)
+						await send_with_reply2(text, clear_reply_message)
 					else:
 						await send_clear2(text)
 				except AttributeError as ae:
