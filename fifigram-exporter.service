@@ -1,0 +1,10 @@
+[Unit]
+Description=fifigram exporter
+Requires=fifigram.service
+After=network.target
+ 
+[Service]
+Restart=always
+WorkingDirectoy=/home/rheinhart/prog/fifigram
+ExecStart=/home/rheinhart/prog/fifigram/fifigram-exporter.py
+ 
